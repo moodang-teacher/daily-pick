@@ -8,7 +8,7 @@ function ProblemCard({ problem }: { problem: Problem }) {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] flex-col items-center justify-center rounded-xl border-2 border-neutral-300 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-900">
+    <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] max-sm:w-[66vw] flex-col items-center justify-center rounded-xl border-2 border-neutral-300 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-900">
       {!imgFailed ? (
         <img
           src={problem.imagePath}
@@ -40,7 +40,7 @@ export default function SlotMachine({
   const displayed = isSpinning ? spinningProblem : result;
 
   return (
-    <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] items-center justify-center">
+    <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] max-sm:w-[66vw] items-center justify-center">
       <AnimatePresence mode="wait">
         {displayed ? (
           <motion.div
@@ -56,7 +56,7 @@ export default function SlotMachine({
             <ProblemCard problem={displayed} />
           </motion.div>
         ) : (
-          <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 dark:border-neutral-700">
+          <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] max-sm:w-[66vw] items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 dark:border-neutral-700">
             뽑기 대기 중
           </div>
         )}
