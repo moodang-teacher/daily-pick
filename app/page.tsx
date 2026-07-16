@@ -73,7 +73,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-zinc-50 p-8 dark:bg-black">
+    <div className="flex min-h-screen flex-col items-center gap-8 bg-zinc-50 p-8 pt-12 dark:bg-black">
       <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
         오늘의 실기 문제 뽑기
       </h1>
