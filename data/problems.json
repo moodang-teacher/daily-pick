@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "title": "01번, 호흡명상클리닉",
+    "imagePath": "/images/exams/exam01.png",
+    "isUsed": false
+  },
+  {
+    "id": 2,
+    "title": "02번, 플라워 페스티벌",
+    "imagePath": "/images/exams/exam02.png",
+    "isUsed": false
+  },
+  {
+    "id": 3,
+    "title": "03번, 자원봉사",
+    "imagePath": "/images/exams/exam03.png",
+    "isUsed": false
+  },
+  {
+    "id": 4,
+    "title": "04번, 환경의 날",
+    "imagePath": "/images/exams/exam04.png",
+    "isUsed": false
+  },
+  {
+    "id": 5,
+    "title": "05번, 겨울캠프",
+    "imagePath": "/images/exams/exam05.png",
+    "isUsed": false
+  },
+  {
+    "id": 6,
+    "title": "06번, 힐링기차여행",
+    "imagePath": "/images/exams/exam06.png",
+    "isUsed": false
+  },
+  {
+    "id": 7,
+    "title": "07번, 국제청소년태권도한마당",
+    "imagePath": "/images/exams/exam07.png",
+    "isUsed": false
+  },
+  {
+    "id": 8,
+    "title": "08번, 육아교육박람회",
+    "imagePath": "/images/exams/exam08.png",
+    "isUsed": false
+  },
+  {
+    "id": 9,
+    "title": "09번, Music Festival",
+    "imagePath": "/images/exams/exam09.png",
+    "isUsed": false
+  },
+  {
+    "id": 10,
+    "title": "10번, 딸기축제",
+    "imagePath": "/images/exams/exam10.png",
+    "isUsed": false
+  },
+  {
+    "id": 11,
+    "title": "11번, 레트로음악회",
+    "imagePath": "/images/exams/exam11.png",
+    "isUsed": false
+  },
+  {
+    "id": 12,
+    "title": "12번, 부산 시티투어",
+    "imagePath": "/images/exams/exam12.png",
+    "isUsed": false
+  },
+  {
+    "id": 13,
+    "title": "13번, 황금의 도시 경주전",
+    "imagePath": "/images/exams/exam13.png",
+    "isUsed": true
+  },
+  {
+    "id": 14,
+    "title": "14번, 벛꽃축제",
+    "imagePath": "/images/exams/exam14.png",
+    "isUsed": false
+  },
+  {
+    "id": 15,
+    "title": "15번, 진드기 예방 캠페인 포스터디자인",
+    "imagePath": "/images/exams/exam15.png",
+    "isUsed": false
+  },
+  {
+    "id": 16,
+    "title": "16번, 구워먹는 채소&과일",
+    "imagePath": "/images/exams/exam16.png",
+    "isUsed": false
+  },
+  {
+    "id": 17,
+    "title": "17번, 예약부도 노쇼",
+    "imagePath": "/images/exams/exam17.png",
+    "isUsed": false
+  },
+  {
+    "id": 18,
+    "title": "18번, 세계지리교과서",
+    "imagePath": "/images/exams/exam18.png",
+    "isUsed": false
+  },
+  {
+    "id": 19,
+    "title": "19번, 우리집 바닥은 아랫집 천장",
+    "imagePath": "/images/exams/exam19.png",
+    "isUsed": false
+  },
+  {
+    "id": 20,
+    "title": "20번, 스마트팜 포스터디자인",
+    "imagePath": "/images/exams/exam20.png",
+    "isUsed": false
+  },
+  {
+    "id": 21,
+    "title": "21번, 그린展 포스터 디자인",
+    "imagePath": "/images/exams/exam21.png",
+    "isUsed": false
+  },
+  {
+    "id": 22,
+    "title": "22번, 국가정원 포스터디자인",
+    "imagePath": "/images/exams/exam22.png",
+    "isUsed": false
+  },
+  {
+    "id": 23,
+    "title": "23번, 5G시대 개막",
+    "imagePath": "/images/exams/exam23.png",
+    "isUsed": false
+  },
+  {
+    "id": 24,
+    "title": "24번, 음식물 쓰레기 캠페인 포스터디자인",
+    "imagePath": "/images/exams/exam24.png",
+    "isUsed": false
+  },
+  {
+    "id": 25,
+    "title": "25번, 테디베어 박물관",
+    "imagePath": "/images/exams/exam25.png",
+    "isUsed": false
+  },
+  {
+    "id": 26,
+    "title": "26번, 북극곰의 얼음",
+    "imagePath": "/images/exams/exam26.png",
+    "isUsed": false
+  },
+  {
+    "id": 27,
+    "title": "27번, 울산고래축제",
+    "imagePath": "/images/exams/exam27.png",
+    "isUsed": false
+  },
+  {
+    "id": 28,
+    "title": "28번, 도시농업박람회",
+    "imagePath": "/images/exams/exam28.png",
+    "isUsed": false
+  },
+  {
+    "id": 29,
+    "title": "29번, 드림커피",
+    "imagePath": "/images/exams/exam29.png",
+    "isUsed": false
+  },
+  {
+    "id": 30,
+    "title": "30번, 커피엑스포",
+    "imagePath": "/images/exams/exam30.png",
+    "isUsed": false
+  }
+]
