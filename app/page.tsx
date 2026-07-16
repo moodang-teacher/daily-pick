@@ -42,7 +42,7 @@ export default function Home() {
       setSpinningProblem({
         id: randomId,
         title: `문제 ${String(randomId).padStart(2, "0")}`,
-        imagePath: `/images/exams/exam${String(randomId).padStart(2, "0")}.png`,
+        imagePath: `/images/exams/exam${String(randomId).padStart(2, "0")}.jpg`,
         isUsed: false,
       });
     }, SPIN_INTERVAL_MS);
