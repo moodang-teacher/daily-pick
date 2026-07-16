@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import confetti from "canvas-confetti";
 import { drawProblem, getStatus } from "./actions";
 import SlotMachine from "@/components/SlotMachine";
 import DrawButton from "@/components/DrawButton";
@@ -58,7 +59,17 @@ export default function Home() {
     setQuote(drawResult.quote);
     setTotal(drawResult.total);
     setUsedCount(drawResult.usedCount);
-    if (!drawResult.problem) setEmptyPool(true);
+    if (!drawResult.problem) {
+      setEmptyPool(true);
+    } else {
+      confetti({
+        particleCount: 140,
+        spread: 100,
+        startVelocity: 45,
+        origin: { y: 0.6 },
+        colors: ["#f97316", "#fb923c", "#fbbf24", "#ffffff"],
+      });
+    }
   }
 
   return (
