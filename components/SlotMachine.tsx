@@ -2,25 +2,40 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getDifficulty } from "@/lib/difficulties";
 import type { Problem } from "@/lib/types";
 
-function ProblemCard({ problem }: { problem: Problem }) {
+function ProblemCard({
+  problem,
+  showDifficultyBadge,
+}: {
+  problem: Problem;
+  showDifficultyBadge: boolean;
+}) {
   const [imgFailed, setImgFailed] = useState(false);
+  const difficulty = showDifficultyBadge ? getDifficulty(problem.id) : undefined;
 
   return (
     <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] max-sm:w-[66vw] flex-col items-center justify-center rounded-xl border-2 border-neutral-300 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-900">
-      {!imgFailed ? (
-        <img
-          src={problem.imagePath}
-          alt={problem.title}
-          className="aspect-[9/10] w-[82%] rounded-md object-cover"
-          onError={() => setImgFailed(true)}
-        />
-      ) : (
-        <div className="flex aspect-[9/10] w-[82%] items-center justify-center rounded-md bg-neutral-100 text-[clamp(1.75rem,5vw,3.5rem)] font-bold text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600">
-          {problem.id}
-        </div>
-      )}
+      <div className="relative aspect-[9/10] w-[82%]">
+        {!imgFailed ? (
+          <img
+            src={problem.imagePath}
+            alt={problem.title}
+            className="h-full w-full rounded-md object-cover"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center rounded-md bg-neutral-100 text-[clamp(1.75rem,5vw,3.5rem)] font-bold text-neutral-400 dark:bg-neutral-800 dark:text-neutral-600">
+            {problem.id}
+          </div>
+        )}
+        {difficulty && (
+          <span className="absolute -right-2 top-3 z-10 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-bold whitespace-nowrap text-white shadow-md sm:text-sm">
+            난이도 : {difficulty}
+          </span>
+        )}
+      </div>
       <p className="mt-2 text-[clamp(0.875rem,1.3vw,1.25rem)] font-semibold text-neutral-700 dark:text-neutral-200">
         {problem.title}
       </p>
@@ -53,7 +68,7 @@ export default function SlotMachine({
             }}
             transition={{ duration: isSpinning ? 0.08 : 0.4 }}
           >
-            <ProblemCard problem={displayed} />
+            <ProblemCard problem={displayed} showDifficultyBadge={!isSpinning} />
           </motion.div>
         ) : (
           <div className="flex aspect-[11/14] w-[clamp(180px,26vw,480px)] max-sm:w-[66vw] items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 dark:border-neutral-700">

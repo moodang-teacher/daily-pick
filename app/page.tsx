@@ -97,12 +97,6 @@ export default function Home() {
         </p>
       )}
 
-      {result && !isSpinning && (
-        <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
-          방금 뽑은 문제: {getDifficulty(result.id)} 난이도
-        </p>
-      )}
-
       {error && <p role="alert" className="text-center text-sm font-medium text-red-500">{error}</p>}
 
       <DrawButton
