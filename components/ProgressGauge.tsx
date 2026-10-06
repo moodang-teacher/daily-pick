@@ -1,11 +1,7 @@
-import type { Difficulty } from "@/lib/difficulties";
-
 export default function ProgressGauge({
-  difficulty,
   total,
   usedCount,
 }: {
-  difficulty: Difficulty;
   total: number;
   usedCount: number;
 }) {
@@ -13,10 +9,10 @@ export default function ProgressGauge({
 
   return (
     <div className="w-full max-w-md">
-      <div className="mb-1 flex justify-between text-sm font-medium text-neutral-600 dark:text-neutral-300">
-        <span>{difficulty} 난이도 진행도</span>
+      <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-sm font-medium text-neutral-600 dark:text-neutral-300">
+        <span>전체 진행도</span>
         <span>
-          <span className="font-bold text-orange-500">{usedCount}</span>/{total}문제 뽑음
+          전체 {total}문제 중 <span className="font-bold text-orange-500">{usedCount}</span>문제 완료!
         </span>
       </div>
       <div className="h-4 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">

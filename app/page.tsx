@@ -8,7 +8,7 @@ import SlotMachine from "@/components/SlotMachine";
 import DrawButton from "@/components/DrawButton";
 import ProgressGauge from "@/components/ProgressGauge";
 import QuoteBanner from "@/components/QuoteBanner";
-import { DRAW_ORDER, getDifficulty } from "@/lib/difficulties";
+import { DRAW_ORDER } from "@/lib/difficulties";
 import type { Problem } from "@/lib/types";
 import type { Quote } from "@/lib/quotes";
 
@@ -33,12 +33,6 @@ export default function Home() {
 
   const nextDifficulty = status?.nextDifficulty;
   const nextProgress = nextDifficulty ? status?.byDifficulty[nextDifficulty] : undefined;
-  const displayedDifficulty = !isSpinning && result
-    ? getDifficulty(result.id)
-    : nextDifficulty;
-  const displayedProgress = displayedDifficulty
-    ? status?.byDifficulty[displayedDifficulty]
-    : undefined;
   const emptyPool = status !== null && nextDifficulty === null;
 
   async function handleDraw() {
@@ -105,18 +99,11 @@ export default function Home() {
         isSpinning={isSpinning}
       />
 
-      {displayedDifficulty && displayedProgress && (
-        <ProgressGauge
-          difficulty={displayedDifficulty}
-          total={displayedProgress.total}
-          usedCount={displayedProgress.usedCount}
-        />
-      )}
-
       {status && (
-        <p className="text-center text-sm font-medium text-neutral-600 dark:text-neutral-300">
-          전체 {status.total}문제 중 <span className="font-bold text-orange-500">{status.usedCount}</span>문제 완료!
-        </p>
+        <ProgressGauge
+          total={status.total}
+          usedCount={status.usedCount}
+        />
       )}
 
       <QuoteBanner quote={quote} />
