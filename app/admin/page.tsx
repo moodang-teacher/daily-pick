@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { resetProblems, getStatus } from "@/app/actions";
 
 export default function AdminPage() {
@@ -69,12 +70,12 @@ export default function AdminPage() {
         </p>
       )}
 
-      <a
+      <Link
         href="/"
         className="mt-4 text-sm text-neutral-400 underline hover:text-neutral-600 dark:hover:text-neutral-200"
       >
         메인으로 돌아가기
-      </a>
+      </Link>
     </div>
   );
 }

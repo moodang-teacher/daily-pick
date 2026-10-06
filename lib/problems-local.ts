@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import type { Problem } from "./types";
+import { getDifficulty, getNextDifficulty, type Difficulty } from "./difficulties";
 
 const DATA_PATH = path.join(process.cwd(), "data", "problems.json");
 
@@ -17,14 +18,16 @@ export async function getAllProblems(): Promise<Problem[]> {
   return readAll();
 }
 
-export async function getAvailableProblems(): Promise<Problem[]> {
+export async function getAvailableProblems(difficulty: Difficulty): Promise<Problem[]> {
   const problems = await readAll();
-  return problems.filter((p) => !p.isUsed);
+  return problems.filter((p) => !p.isUsed && getDifficulty(p.id) === difficulty);
 }
 
 export async function selectProblem(): Promise<Problem | null> {
   const problems = await readAll();
-  const available = problems.filter((p) => !p.isUsed);
+  const difficulty = getNextDifficulty(problems);
+  if (!difficulty) return null;
+  const available = problems.filter((p) => !p.isUsed && getDifficulty(p.id) === difficulty);
   if (available.length === 0) return null;
 
   const picked = available[Math.floor(Math.random() * available.length)];

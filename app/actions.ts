@@ -7,30 +7,52 @@ import {
 } from "@/lib/problems-store";
 import { getRandomQuote, type Quote } from "@/lib/quotes";
 import type { Problem } from "@/lib/types";
+import { DIFFICULTIES, getDifficulty, getNextDifficulty, type Difficulty } from "@/lib/difficulties";
+
+export interface DifficultyProgress {
+  total: number;
+  usedCount: number;
+  availableProblems: Problem[];
+}
+
+export interface Status {
+  total: number;
+  usedCount: number;
+  byDifficulty: Record<Difficulty, DifficultyProgress>;
+  nextDifficulty: Difficulty | null;
+}
 
 export interface DrawResult {
   problem: Problem | null;
   quote: Quote;
-  total: number;
-  usedCount: number;
+  status: Status;
 }
 
-export async function getStatus(): Promise<{ total: number; usedCount: number }> {
+export async function getStatus(): Promise<Status> {
   const problems = await getAllProblems();
+  const byDifficulty = {} as Status["byDifficulty"];
+  for (const difficulty of DIFFICULTIES) {
+    const matching = problems.filter((problem) => getDifficulty(problem.id) === difficulty);
+    byDifficulty[difficulty] = {
+      total: matching.length,
+      usedCount: matching.filter((problem) => problem.isUsed).length,
+      availableProblems: matching.filter((problem) => !problem.isUsed),
+    };
+  }
   return {
     total: problems.length,
     usedCount: problems.filter((p) => p.isUsed).length,
+    byDifficulty,
+    nextDifficulty: getNextDifficulty(problems),
   };
 }
 
 export async function drawProblem(): Promise<DrawResult> {
   const problem = await selectProblem();
-  const problems = await getAllProblems();
   return {
     problem,
     quote: getRandomQuote(),
-    total: problems.length,
-    usedCount: problems.filter((p) => p.isUsed).length,
+    status: await getStatus(),
   };
 }
 

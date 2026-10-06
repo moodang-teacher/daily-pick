@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
-import { drawProblem, getStatus } from "./actions";
+import Link from "next/link";
+import { drawProblem, getStatus, type Status } from "./actions";
 import SlotMachine from "@/components/SlotMachine";
 import DrawButton from "@/components/DrawButton";
 import ProgressGauge from "@/components/ProgressGauge";
 import QuoteBanner from "@/components/QuoteBanner";
+import { DRAW_ORDER, getDifficulty } from "@/lib/difficulties";
 import type { Problem } from "@/lib/types";
 import type { Quote } from "@/lib/quotes";
 
@@ -14,61 +16,60 @@ const SPIN_INTERVAL_MS = 90;
 const SPIN_DURATION_MS = 1200;
 
 export default function Home() {
-  const [total, setTotal] = useState(0);
-  const [usedCount, setUsedCount] = useState(0);
+  const [status, setStatus] = useState<Status | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinningProblem, setSpinningProblem] = useState<Problem | null>(null);
   const [result, setResult] = useState<Problem | null>(null);
   const [quote, setQuote] = useState<Quote | null>(null);
-  const [emptyPool, setEmptyPool] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const spinTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    getStatus().then(({ total, usedCount }) => {
-      setTotal(total);
-      setUsedCount(usedCount);
-      if (total > 0 && usedCount >= total) setEmptyPool(true);
-    });
+    getStatus().then(setStatus).catch(() => setError("문제 현황을 불러오지 못했습니다."));
     return () => {
       if (spinTimer.current) clearInterval(spinTimer.current);
     };
   }, []);
 
-  async function handleDraw() {
-    if (isSpinning || emptyPool || total === 0) return;
-    setIsSpinning(true);
+  const nextDifficulty = status?.nextDifficulty;
+  const selectedProgress = nextDifficulty ? status?.byDifficulty[nextDifficulty] : undefined;
+  const emptyPool = status !== null && nextDifficulty === null;
 
+  async function handleDraw() {
+    if (isSpinning || emptyPool || !selectedProgress) return;
+    setIsSpinning(true);
+    setError(null);
+
+    const available = selectedProgress.availableProblems;
     spinTimer.current = setInterval(() => {
-      const randomId = Math.floor(Math.random() * total) + 1;
-      setSpinningProblem({
-        id: randomId,
-        title: `문제 ${String(randomId).padStart(2, "0")}`,
-        imagePath: `/images/exams/exam${String(randomId).padStart(2, "0")}.jpg`,
-        isUsed: false,
-      });
+      setSpinningProblem(available[Math.floor(Math.random() * available.length)]);
     }, SPIN_INTERVAL_MS);
 
-    const [drawResult] = await Promise.all([
-      drawProblem(),
-      new Promise((resolve) => setTimeout(resolve, SPIN_DURATION_MS)),
-    ]);
+    try {
+      const [drawResult] = await Promise.all([
+        drawProblem(),
+        new Promise((resolve) => setTimeout(resolve, SPIN_DURATION_MS)),
+      ]);
 
-    if (spinTimer.current) clearInterval(spinTimer.current);
-    setIsSpinning(false);
-    setResult(drawResult.problem);
-    setQuote(drawResult.quote);
-    setTotal(drawResult.total);
-    setUsedCount(drawResult.usedCount);
-    if (!drawResult.problem) {
-      setEmptyPool(true);
-    } else {
-      confetti({
-        particleCount: 140,
-        spread: 100,
-        startVelocity: 45,
-        origin: { y: 0.6 },
-        colors: ["#f97316", "#fb923c", "#fbbf24", "#ffffff"],
-      });
+      setResult(drawResult.problem);
+      setQuote(drawResult.problem ? drawResult.quote : null);
+      setStatus(drawResult.status);
+      if (drawResult.problem) {
+        confetti({
+          particleCount: 140,
+          spread: 100,
+          startVelocity: 45,
+          origin: { y: 0.6 },
+          colors: ["#f97316", "#fb923c", "#fbbf24", "#ffffff"],
+        });
+      }
+    } catch {
+      setError("문제를 뽑지 못했습니다. 다시 시도해 주세요.");
+    } finally {
+      if (spinTimer.current) clearInterval(spinTimer.current);
+      spinTimer.current = null;
+      setIsSpinning(false);
+      setSpinningProblem(null);
     }
   }
 
@@ -77,6 +78,19 @@ export default function Home() {
       <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-100">
         오늘의 실기 문제 뽑기
       </h1>
+
+      <div className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-5 text-center dark:border-neutral-800 dark:bg-neutral-900">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">뽑기 순서</p>
+        <p className="mt-1 font-semibold text-neutral-700 dark:text-neutral-200">
+          {DRAW_ORDER.join(" → ")} → 반복
+        </p>
+        <p className="mt-3 text-lg font-bold text-orange-500">
+          {nextDifficulty ? `이번 차례: ${nextDifficulty}` : status ? "모든 문제 완료" : "문제 현황을 불러오는 중"}
+        </p>
+        <Link href="/difficulties" className="mt-3 inline-block text-sm text-neutral-500 underline hover:text-orange-500 dark:text-neutral-400">
+          난이도별 문제 보기
+        </Link>
+      </div>
 
       <SlotMachine
         spinningProblem={spinningProblem}
@@ -90,13 +104,27 @@ export default function Home() {
         </p>
       )}
 
+      {result && (
+        <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+          방금 뽑은 문제: {getDifficulty(result.id)} 난이도
+        </p>
+      )}
+
+      {error && <p role="alert" className="text-center text-sm font-medium text-red-500">{error}</p>}
+
       <DrawButton
         onClick={handleDraw}
-        disabled={isSpinning || emptyPool || total === 0}
+        disabled={isSpinning || emptyPool || !selectedProgress}
         isSpinning={isSpinning}
       />
 
-      <ProgressGauge total={total} usedCount={usedCount} />
+      {nextDifficulty && selectedProgress && (
+        <ProgressGauge
+          difficulty={nextDifficulty}
+          total={selectedProgress.total}
+          usedCount={selectedProgress.usedCount}
+        />
+      )}
 
       <QuoteBanner quote={quote} />
     </div>

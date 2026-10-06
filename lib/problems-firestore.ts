@@ -4,11 +4,12 @@ import {
   query,
   where,
   doc,
-  updateDoc,
+  runTransaction,
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import type { Problem } from "./types";
+import { getDifficulty, getNextDifficulty, PROBLEM_IDS_BY_DIFFICULTY, type Difficulty } from "./difficulties";
 
 const COLLECTION = "problems";
 
@@ -26,24 +27,32 @@ export async function getAllProblems(): Promise<Problem[]> {
   return snapshot.docs.map((d) => d.data() as Problem);
 }
 
-export async function getAvailableProblems(): Promise<Problem[]> {
+export async function getAvailableProblems(difficulty: Difficulty): Promise<Problem[]> {
   const q = query(
     collection(requireDb(), COLLECTION),
     where("isUsed", "==", false)
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => d.data() as Problem);
+  return snapshot.docs
+    .map((d) => d.data() as Problem)
+    .filter((problem) => getDifficulty(problem.id) === difficulty);
 }
 
 export async function selectProblem(): Promise<Problem | null> {
-  const available = await getAvailableProblems();
-  if (available.length === 0) return null;
+  const database = requireDb();
+  const ids = Object.values(PROBLEM_IDS_BY_DIFFICULTY).flat();
+  return runTransaction(database, async (transaction) => {
+    const references = ids.map((id) => doc(database, COLLECTION, String(id)));
+    const snapshots = await Promise.all(references.map((reference) => transaction.get(reference)));
+    const problems = snapshots.filter((snapshot) => snapshot.exists()).map((snapshot) => snapshot.data() as Problem);
+    const difficulty = getNextDifficulty(problems);
+    if (!difficulty) return null;
 
-  const picked = available[Math.floor(Math.random() * available.length)];
-  await updateDoc(doc(requireDb(), COLLECTION, String(picked.id)), {
-    isUsed: true,
+    const available = problems.filter((problem) => !problem.isUsed && getDifficulty(problem.id) === difficulty);
+    const picked = available[Math.floor(Math.random() * available.length)];
+    transaction.update(doc(database, COLLECTION, String(picked.id)), { isUsed: true });
+    return picked;
   });
-  return picked;
 }
 
 export async function resetAllProblems(): Promise<void> {
