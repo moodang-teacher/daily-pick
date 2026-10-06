@@ -19,11 +19,6 @@ export default function ProgressGauge({
           <span className="font-bold text-orange-500">{usedCount}</span>/{total}문제 뽑음
         </span>
       </div>
-      {usedCount < total && (
-        <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-          다음은 {usedCount + 1}번째 문제
-        </p>
-      )}
       <div className="h-4 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
         <div
           className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-500"

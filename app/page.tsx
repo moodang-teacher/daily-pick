@@ -32,15 +32,21 @@ export default function Home() {
   }, []);
 
   const nextDifficulty = status?.nextDifficulty;
-  const selectedProgress = nextDifficulty ? status?.byDifficulty[nextDifficulty] : undefined;
+  const nextProgress = nextDifficulty ? status?.byDifficulty[nextDifficulty] : undefined;
+  const displayedDifficulty = !isSpinning && result
+    ? getDifficulty(result.id)
+    : nextDifficulty;
+  const displayedProgress = displayedDifficulty
+    ? status?.byDifficulty[displayedDifficulty]
+    : undefined;
   const emptyPool = status !== null && nextDifficulty === null;
 
   async function handleDraw() {
-    if (isSpinning || emptyPool || !selectedProgress) return;
+    if (isSpinning || emptyPool || !nextProgress) return;
     setIsSpinning(true);
     setError(null);
 
-    const available = selectedProgress.availableProblems;
+    const available = nextProgress.availableProblems;
     spinTimer.current = setInterval(() => {
       setSpinningProblem(available[Math.floor(Math.random() * available.length)]);
     }, SPIN_INTERVAL_MS);
@@ -79,19 +85,6 @@ export default function Home() {
         오늘의 실기 문제 뽑기
       </h1>
 
-      <div className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-5 text-center dark:border-neutral-800 dark:bg-neutral-900">
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">뽑기 순서</p>
-        <p className="mt-1 font-semibold text-neutral-700 dark:text-neutral-200">
-          {DRAW_ORDER.join(" → ")} → 반복
-        </p>
-        <p className="mt-3 text-lg font-bold text-orange-500">
-          {nextDifficulty ? `이번 차례: ${nextDifficulty}` : status ? "모든 문제 완료" : "문제 현황을 불러오는 중"}
-        </p>
-        <Link href="/difficulties" className="mt-3 inline-block text-sm text-neutral-500 underline hover:text-orange-500 dark:text-neutral-400">
-          난이도별 문제 보기
-        </Link>
-      </div>
-
       <SlotMachine
         spinningProblem={spinningProblem}
         result={result}
@@ -104,7 +97,7 @@ export default function Home() {
         </p>
       )}
 
-      {result && (
+      {result && !isSpinning && (
         <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
           방금 뽑은 문제: {getDifficulty(result.id)} 난이도
         </p>
@@ -114,19 +107,38 @@ export default function Home() {
 
       <DrawButton
         onClick={handleDraw}
-        disabled={isSpinning || emptyPool || !selectedProgress}
+        disabled={isSpinning || emptyPool || !nextProgress}
         isSpinning={isSpinning}
       />
 
-      {nextDifficulty && selectedProgress && (
+      {displayedDifficulty && displayedProgress && (
         <ProgressGauge
-          difficulty={nextDifficulty}
-          total={selectedProgress.total}
-          usedCount={selectedProgress.usedCount}
+          difficulty={displayedDifficulty}
+          total={displayedProgress.total}
+          usedCount={displayedProgress.usedCount}
         />
       )}
 
+      {status && (
+        <p className="text-center text-sm font-medium text-neutral-600 dark:text-neutral-300">
+          전체 {status.total}문제 중 <span className="font-bold text-orange-500">{status.usedCount}</span>문제 완료!
+        </p>
+      )}
+
       <QuoteBanner quote={quote} />
+
+      <footer className="mt-auto w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-5 text-center dark:border-neutral-800 dark:bg-neutral-900">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">뽑기 순서</p>
+        <p className="mt-1 font-semibold text-neutral-700 dark:text-neutral-200">
+          {DRAW_ORDER.join(" → ")} → 반복
+        </p>
+        <p className="mt-3 text-lg font-bold text-orange-500">
+          {nextDifficulty ? `다음 난이도: ${nextDifficulty}` : status ? "모든 문제 완료" : "문제 현황을 불러오는 중"}
+        </p>
+        <Link href="/difficulties" className="mt-3 inline-block text-sm text-neutral-500 underline hover:text-orange-500 dark:text-neutral-400">
+          난이도별 문제 보기
+        </Link>
+      </footer>
     </div>
   );
 }
