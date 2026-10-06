@@ -6,7 +6,7 @@ export default function DifficultiesPage() {
   const items = problems.map(({ id, title, imagePath }) => ({ id, title, imagePath }));
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-5 py-10 sm:px-8">
+    <main className="mx-auto min-h-screen w-[90vw] py-10">
       <Link href="/" className="text-sm font-medium text-neutral-500 hover:text-orange-500 dark:text-neutral-400">
         ← 문제 뽑기로 돌아가기
       </Link>

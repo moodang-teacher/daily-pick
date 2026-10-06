@@ -59,19 +59,19 @@ export default function DifficultyCatalog({ problems }: { problems: CatalogProbl
         <h2 className="mb-5 text-xl font-bold text-neutral-900 dark:text-neutral-100">
           {active} 난이도 <span className="text-orange-500">{items.length}문제</span>
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           {items.map((problem) => (
-            <article key={problem.id} className="flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">
+            <article key={problem.id} className="flex min-w-0 flex-col items-start gap-3 rounded-2xl border border-neutral-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-4 dark:border-neutral-800 dark:bg-neutral-900">
               <Image
                 src={problem.imagePath}
                 alt={problem.title}
-                width={96}
-                height={120}
-                className="h-28 w-20 shrink-0 rounded-lg object-cover"
+                width={160}
+                height={200}
+                className="aspect-[9/10] h-auto w-full rounded-lg object-cover sm:h-28 sm:w-20 sm:shrink-0"
               />
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-bold text-orange-500">문제 {String(problem.id).padStart(2, "0")}</p>
-                <h3 className="mt-1 font-semibold text-neutral-800 dark:text-neutral-100">{problem.title}</h3>
+                <h3 className="mt-1 break-words font-semibold text-neutral-800 dark:text-neutral-100">{problem.title}</h3>
               </div>
             </article>
           ))}
